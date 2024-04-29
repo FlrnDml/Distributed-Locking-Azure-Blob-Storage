@@ -2,6 +2,13 @@ import BlobStorageHandler from "./blob-storage-handler";
 
 export class DistributedLock {
   private blobStorageHandler: BlobStorageHandler;
+  /**
+   * Map to store the leaseId and blobName
+   * 
+   * Azure Blob Storage does not provide a way to release a lock using the blob name
+   * The leaseId is required to release the lock
+   * We are mapping the blobName to the leaseId to make it easier to release the lock
+   */
   private leaseIdBlobNameMap: Map<string, string> = new Map();
 
   constructor(
@@ -24,18 +31,6 @@ export class DistributedLock {
     }
     this.leaseIdBlobNameMap.set(name, leaseId);
   }
-
-  // async findLock(name: string): Promise<string | undefined> {
-  //     try {
-  //         const blobClient = this.containerClient.getBlobClient(this.blobName);
-  //         const leaseClient = new BlobLeaseClient(blobClient, undefined);
-  //         const lease = await leaseClient.getLease();
-  //         return lease.leaseId;
-  //     } catch (error: any) {
-  //         console.error("Failed to find lock: ", error.message);
-  //         return undefined;
-  //     }
-  // }
 
   async releaseLock(name: string): Promise<void> {
     const leaseId = this.leaseIdBlobNameMap.get(name);

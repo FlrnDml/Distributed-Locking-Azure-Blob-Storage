@@ -4,7 +4,7 @@ import loadEnvironment from "./helper/load-environment";
 const { AZURE_STORAGE_CONNECTION_STRING, BLOB_STORAGE_CONTAINER_NAME } =
   loadEnvironment();
 
-async function processBankAccountOperations(blobName: string = "resource-1") {
+async function runOperationWithLock(blobName: string = "resource-1") {
 
   // use the DistributedLock class to acquire and release a lock
   const lock = new DistributedLock(
@@ -23,6 +23,6 @@ async function processBankAccountOperations(blobName: string = "resource-1") {
   console.log("Lock released");
 }
 
-processBankAccountOperations().catch((err) => {
+runOperationWithLock().catch((err) => {
   console.error("An Error occured:", err.message);
 });

@@ -13,36 +13,33 @@ export class BlobStorageHandler {
     this.containerClient = blobServiceClient.getContainerClient(containerName);
   }
 
+  /**
+   * creates a blob in the container and acquires a lease on it
+   * @param blobName 
+   * @param leaseDuration 
+   * @returns id of the lease
+   */
   async leaseBlob(
     blobName: string,
     leaseDuration: number
   ): Promise<string | undefined> {
-    try {
-      console.log(await this.createBlobForLease(blobName));
+      await this.createBlobForLease(blobName);
       const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
-      const blobs = this.containerClient.listBlobsFlat();
-      for await (const blob of blobs) {
-        console.log(`\tBlob Name: ${blob.name}`);
-      }
-      console.log(blobs);
       const leaseClient = blockBlobClient.getBlobLeaseClient();
       const lease = await leaseClient.acquireLease(leaseDuration);
       return lease.leaseId;
-    } catch (error: any) {
-      console.error("Failed to acquire lock: ", error.message, error.stack);
-      return undefined;
-    }
   }
 
+  /**
+   * Releases a lease on a blob and deletes the blob
+   * @param blobName 
+   * @param leaseId 
+   */
   async releaseBlob(blobName: string, leaseId: string): Promise<void> {
-    try {
       const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
-
       const leaseClient = blockBlobClient.getBlobLeaseClient(leaseId);
       await leaseClient.releaseLease();
-    } catch (error: any) {
-      console.error("Failed to release lock: ", error.message, error.stack);
-    }
+      await blockBlobClient.delete();
   }
 
   /**
@@ -123,11 +120,6 @@ export class BlobStorageHandler {
     }
 
     return true;
-  }
-
-  async deleteBlob(blobName: string): Promise<void> {
-    const blockBlobClient = this.containerClient.getBlockBlobClient(blobName);
-    await blockBlobClient.delete();
   }
 }
 
