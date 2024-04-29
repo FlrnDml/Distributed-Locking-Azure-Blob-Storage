@@ -4,7 +4,7 @@
   "description": "POC for a distributed locking mechanism using Azure Blob Storage",
   "main": "main.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npx ts-node main.ts"
   },
   "author": "",
   "license": "ISC",
