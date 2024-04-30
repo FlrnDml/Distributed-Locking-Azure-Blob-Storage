@@ -1,13 +1,6 @@
 {
   "name": "distributed-locking-azure-blob-storage",
   "version": "1.0.0",
-  "description": "POC for a distributed locking mechanism using Azure Blob Storage",
-  "main": "main.ts",
-  "scripts": {
-    "start": "npx ts-node main.ts"
-  },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@azure/storage-blob": "^12.17.0",
     "dotenv": "^16.4.5",
