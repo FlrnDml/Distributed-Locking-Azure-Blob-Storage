@@ -9,13 +9,13 @@ const { AZURE_STORAGE_CONNECTION_STRING, BLOB_STORAGE_CONTAINER_NAME } =
 
 const resource = "resource-1";
 
-runOperationWithLock(resource);
-runOperationWithLock(resource);
-runOperationWithLock(resource);
+runOperationWithLock(resource, 1);
+runOperationWithLock(resource, 2);
+runOperationWithLock(resource, 3);
 
 
 // run a single operation with a lock for a resource
-async function runOperationWithLock(name: string) {
+async function runOperationWithLock(name: string, id: number) {
   try {
     const lock = new DistributedLock(
       AZURE_STORAGE_CONNECTION_STRING,
@@ -23,15 +23,15 @@ async function runOperationWithLock(name: string) {
     );
 
     await lock.acquireLock(name);
-    console.log("Lock acquired...");
+    console.log(id, "Lock acquired...");
 
     // Simulate an operation
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log("Operation processed");
+    console.log(id, "Operation processed");
 
     await lock.releaseLock(name);
-    console.log("Lock released");
+    console.log(id, "Lock released");
   } catch (err: any) {
-    console.error("Lock failed");
+    console.error(id, "Lock failed");
   }
 }
