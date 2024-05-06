@@ -19,12 +19,6 @@ The integration with Azure Blob Storage leasing is handled through our software'
 1. Lease Management: The blob is leased, granting exclusive access to it. This lease acts as the lock, ensuring that no other processes can modify the blob during the lease period. The blobs name is unique, in case another client trys to lock the same resource (by name), it will conflict and show that this resource is locked.
 1. Release and Clean-up: When the lock (*lease*) is no longer needed, it is released, and the blob is deleted, cleaning up the resources and ending the lock period. There is a default Time to Life of 30 seconds.
 
-# Decisions made
-TBD
-
-# Important Information
-TBD
-
 # Pricing
 The cost estimation for using our distributed locking mechanism with Azure Blob Storage is based on two different types of pricing:
 
